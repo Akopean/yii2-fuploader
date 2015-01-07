@@ -30,7 +30,8 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \jones\fuploader\FileUpload::widget();?>```
+<?= \jones\fuploader\FileUpload::widget();?>
+```
 
 1. Specify `action` property for uploading url:
 
