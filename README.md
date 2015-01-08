@@ -1,6 +1,6 @@
 File Uploader
 =============
-> Not ready for production yet.
+> Not ready for production yet. Implemented only single file uploading.
 
 File uploader. Yii2 extension based on [jQuery File Upload Plugin](https://github.com/blueimp/jQuery-File-Upload).
 
@@ -12,13 +12,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist joni-jones/yii2-fuploader "*"
+php composer.phar require --prefer-dist joni-jones/yii2-fuploader "dev-master"
 ```
 
 or add
 
 ```
-"joni-jones/yii2-fuploader": "*"
+"joni-jones/yii2-fuploader": "dev-master"
 ```
 
 to the require section of your `composer.json` file.
@@ -30,7 +30,8 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \jones\fuploader\FileUpload::widget();?>```
+<?= \jones\fuploader\FileUpload::widget();?>
+```
 
 1. Specify `action` property for uploading url:
 
@@ -60,3 +61,41 @@ Once the extension is installed, simply use it in your code by  :
 		]
 	]);
 	```
+4. Also you can use extension actions to store some file details after uploading. For example, update user avatar attribute in database.
+
+	```php
+	public function actions()
+	{
+		return[
+			'some_action' => [
+				'class' => 'jones\fuploader\actions\UploadAction',
+				'path' => 'some path for uploading',
+				'url' => 'some url for uploaded file', //this url will be accessable in action response
+				'callback' => [$this, 'someCallback'] //any callable function
+			]
+		];
+	}
+	```
+5. If callback was specified it will be triggered after uploading:
+
+	```php
+	public function someCallback($request, $file_name, $file_path)
+	{
+		//some code
+	}
+	```
+`UploadAction()` return response in json format. This is structure of response:
+	
+	```json
+	{"message": "successMessage", "name": "some file with extension", "url": "url to file with file name"}
+	```
+	
+	```json
+	{"reason": "message with reason why file does not uploaded"}
+	```
+Also, status codes of response will be returned in headers.
+
+License
+----
+
+MIT
