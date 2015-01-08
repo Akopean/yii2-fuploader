@@ -5,7 +5,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\ErrorException;
 use yii\web\Response;
-use jones\fuploader\components\File;
+use jones\fuploader\UploadForm;
 
 /**
  * Class UploadAction
@@ -32,35 +32,23 @@ class UploadAction extends Action
         $response = Yii::$app->response;
         $request = Yii::$app->request;
         try {
-            $path = $request->post('path', $this->path);
-            if (!$path) {
-                throw new ErrorException(Yii::t('app', 'File upload path should not be empty'));
+            $form = new UploadForm();
+            $form->attributes = $request->post();
+            $form->path = $form->path ?: $this->path;
+            if (!$form->validate() || !$form->upload()) {
+                throw new ErrorException($this->prepareErrors($form->getErrors()));
             }
-            $ext = $request->post('ext');
-            if (!$ext) {
-                throw new ErrorException(Yii::t('app', 'File extension is required parameter'));
-            }
-            $attr = $request->post('attribute');
-            if (!$attr) {
-                throw new ErrorException(Yii::t('app', 'File input name is required parameter'));
-            }
-            $file = new File();
-			$fName = $request->post('fileName', '') ?: Yii::$app->getSecurity()->generateRandomString();
-            if (!$file->upload($attr, $fName, $ext, $path)) {
-                throw new ErrorException(Yii::t('app', 'File not uploaded'));
-            }
-            $name = $fName.'.'.$ext;
             $response->setStatusCode(200);
             $response->data = [
                 'message' => Yii::t('app', 'File has been uploaded successfully'),
-                'name' => $name,
-				'url' => $this->url.'/'.$name
+                'name' => $form->name,
+				'url' => $this->url.'/'.$form->name
             ];
 			if (is_callable($this->callback)) {
 				call_user_func_array($this->callback, [
 					'request' => $request->post(),
-					'file_name' => $fName,
-					'file_path' => $path,
+					'file_name' => $form->fileName,
+					'file_path' => $form->path,
 				]);
 			}
         } catch (ErrorException $e) {
@@ -69,6 +57,27 @@ class UploadAction extends Action
         }
         $response->format = Response::FORMAT_JSON;
         return $response;
+    }
+
+    /**
+     * Convert array of errors to string
+     *
+     * @access protected
+     * @param array $errors
+     * @param string $delimiter
+     * @return string
+     */
+    protected function prepareErrors(array $errors, $delimiter = '<br/>')
+    {
+        $msg = [];
+        foreach ($errors as $error) {
+            if (is_array($error)) {
+                $msg[] = $this->prepareErrors($error, $delimiter);
+            } else {
+                $msg[] = $error;
+            }
+        }
+        return implode($delimiter, $msg);
     }
 }
  

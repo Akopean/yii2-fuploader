@@ -49,11 +49,13 @@ class File
      * @param $name
      * @param $ext
      * @param $path
-     * @return bool
+     * @param array $allowed list of allowed file types
+     * @return boolean
      * @throws \yii\base\ErrorException
      */
-    public function upload($attr, $name, $ext, $path)
+    public function upload($attr, $name, $ext, $path, array $allowed = [])
     {
+        $allowed = array_filter($allowed);
         $file = UploadedFile::getInstanceByName($attr);
         if (!$file) {
             throw new ErrorException(Yii::t('app', 'Select at least one file'));
@@ -62,6 +64,9 @@ class File
             throw new ErrorException(Yii::t('app', static::$errors[$file->error]));
         }
         if (!in_array($file->type, static::$mimeTypes)) {
+            throw new ErrorException(Yii::t('app', 'Invalid file type'));
+        }
+        if ($allowed && !in_array($file->extension, $allowed)) {
             throw new ErrorException(Yii::t('app', 'Invalid file type'));
         }
         FileHelper::createDirectory($path);
