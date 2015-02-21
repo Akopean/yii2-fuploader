@@ -51,6 +51,7 @@ class UploadForm extends Model
     {
         $this->allowedFileTypes = explode(',', $this->allowedFileTypes);
         $file = new File();
+		$this->fileName = $this->fileName ?: Yii::$app->getSecurity()->generateRandomString();
         $uploaded = $file->upload($this->attribute, $this->fileName, $this->ext, $this->path, $this->allowedFileTypes);
         if ($file->hasErrors()) {
             $this->addErrors($file->getErrors());

@@ -68,7 +68,7 @@ class File
         $filesCount = sizeof($files);
         foreach ($files as $file) {
             if ($filesCount > 1) {
-                $name = Yii::$app->security->generateRandomString();
+                $name = Yii::$app->getSecurity()->generateRandomString();
             }
             if ($file->getHasError()) {
                 $this->uploadErrors[] = Yii::t('app', static::$errors[$file->error]);

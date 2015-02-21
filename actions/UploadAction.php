@@ -40,6 +40,7 @@ class UploadAction extends Action
             if (!$form->validate() || !$uploaded = $form->upload()) {
                 throw new ErrorException($this->prepareErrors($form->getErrors()));
             }
+			$callbackData['request'] = $request->post();
             if (sizeof($uploaded) > 1) {
                 $data = [
                     'message' => Yii::t('app', 'File has been uploaded successfully'),
@@ -53,14 +54,11 @@ class UploadAction extends Action
                     'name' => $name,
                     'url' => $this->url.'/'.$name
                 ];
-                $callbackData = [
-                    'file_name' => $uploaded[0]['name'],
-                    'file_path' => $uploaded[0]['path']
-                ];
+                $callbackData['file_name'] = $uploaded[0]['name'];
+                $callbackData['file_path'] = $uploaded[0]['path'];
             }
             $response->setStatusCode(self::STATUS_SUCCESS);
             $response->data = $data;
-            $callbackData['request'] = $request->post();
 			if (is_callable($this->callback)) {
 				call_user_func_array($this->callback, $callbackData);
 			}
