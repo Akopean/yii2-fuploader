@@ -59,6 +59,7 @@ class File
     {
         $this->uploadErrors = [];
         $allowed = array_filter($allowed);
+		$attr = str_replace('[]', '', $attr);
         $files = UploadedFile::getInstancesByName($attr);
         $uploaded = [];
         if (!$files) {

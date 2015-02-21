@@ -52,6 +52,7 @@ class FileUpload extends Widget
         //allow to load multiple files
         if ($this->multiple) {
             $options['multiple'] = '';
+			$this->attribute .= '[]';
         }
         $btnOptions = $this->options;
         unset($btnOptions['id'], $btnOptions['plugin']);
@@ -77,7 +78,8 @@ class FileUpload extends Widget
                 'ext' => 'png',
                 'attribute' => $this->attribute,
                 'fileName' => '',
-            ]
+            ],
+			'singleFileUploads' => false
         ];
 		$request = Yii::$app->getRequest();
 		if ($request->enableCsrfValidation) {
