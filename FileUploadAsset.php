@@ -12,7 +12,7 @@ class FileUploadAsset extends AssetBundle
     public $sourcePath = '@bower';
     public $js = [
         'jquery.ui/ui/widget.js',
-        'jquery-file-upload/js/query.fileupload.js',
+        'jquery-file-upload/js/jquery.fileupload.js',
     ];
 
     public $css = [
