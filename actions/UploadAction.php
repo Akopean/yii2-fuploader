@@ -13,6 +13,8 @@ use jones\fuploader\UploadForm;
  */
 class UploadAction extends Action
 {
+    const STATUS_SUCCESS = 200;
+    const STATUS_APPLICATION_ERROR = 500;
 
 	/** @var string $path path to file uploading **/
     public $path = '';
@@ -35,24 +37,35 @@ class UploadAction extends Action
             $form = new UploadForm();
             $form->attributes = $request->post();
             $form->path = $form->path ?: $this->path;
-            if (!$form->validate() || !$form->upload()) {
+            if (!$form->validate() || !$uploaded = $form->upload()) {
                 throw new ErrorException($this->prepareErrors($form->getErrors()));
             }
-            $response->setStatusCode(200);
-            $response->data = [
-                'message' => Yii::t('app', 'File has been uploaded successfully'),
-                'name' => $form->name,
-				'url' => $this->url.'/'.$form->name
-            ];
+            if (sizeof($uploaded) > 1) {
+                $data = [
+                    'message' => Yii::t('app', 'File has been uploaded successfully'),
+                    'files' => $uploaded
+                ];
+                $callbackData['files'] = $uploaded;
+            } else {
+                $name = $uploaded[0]['name'].'.'.$uploaded[0]['ext'];
+                $data = [
+                    'message' => Yii::t('app', 'Files has been uploaded successfully'),
+                    'name' => $name,
+                    'url' => $this->url.'/'.$name
+                ];
+                $callbackData = [
+                    'file_name' => $uploaded[0]['name'],
+                    'file_path' => $uploaded[0]['path']
+                ];
+            }
+            $response->setStatusCode(self::STATUS_SUCCESS);
+            $response->data = $data;
+            $callbackData['request'] = $request->post();
 			if (is_callable($this->callback)) {
-				call_user_func_array($this->callback, [
-					'request' => $request->post(),
-					'file_name' => $form->fileName,
-					'file_path' => $form->path,
-				]);
+				call_user_func_array($this->callback, $callbackData);
 			}
         } catch (ErrorException $e) {
-            $response->setStatusCode(500);
+            $response->setStatusCode(self::STATUS_APPLICATION_ERROR);
             $response->data = ['reason' => $e->getMessage()];
         }
         $response->format = Response::FORMAT_JSON;

@@ -16,7 +16,6 @@ class UploadForm extends Model
     public $attribute;
     public $fileName;
     public $allowedFileTypes;
-    public $name;
 
     /**
      * @inheritdoc
@@ -42,6 +41,9 @@ class UploadForm extends Model
     }
 
     /**
+     * Upload files
+     *
+     * @access public
      * @return boolean
      * @throws \yii\base\ErrorException
      */
@@ -49,9 +51,11 @@ class UploadForm extends Model
     {
         $this->allowedFileTypes = explode(',', $this->allowedFileTypes);
         $file = new File();
-        $this->fileName = $this->fileName ?: Yii::$app->security->generateRandomString();
-        $this->name = $this->fileName.'.'.$this->ext;
-        return $file->upload($this->attribute, $this->fileName, $this->ext, $this->path, $this->allowedFileTypes);
+        $uploaded = $file->upload($this->attribute, $this->fileName, $this->ext, $this->path, $this->allowedFileTypes);
+        if ($file->hasErrors()) {
+            $this->addErrors($file->getErrors());
+        }
+        return $uploaded;
     }
 }
  

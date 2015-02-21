@@ -40,6 +40,8 @@ class File
         UPLOAD_ERR_CANT_WRITE => 'Cannot to write file on disk',
         UPLOAD_ERR_EXTENSION => 'File not uploaded'
     ];
+    /** @var array list of upload errors */
+    protected $uploadErrors = [];
 
     /**
      * Upload file
@@ -55,22 +57,62 @@ class File
      */
     public function upload($attr, $name, $ext, $path, array $allowed = [])
     {
+        $this->uploadErrors = [];
         $allowed = array_filter($allowed);
-        $file = UploadedFile::getInstanceByName($attr);
-        if (!$file) {
-            throw new ErrorException(Yii::t('app', 'Select at least one file'));
+        $files = UploadedFile::getInstancesByName($attr);
+        $uploaded = [];
+        if (!$files) {
+            $this->uploadErrors[] = Yii::t('app', 'Select at least one file');
+            return false;
         }
-        if ($file->getHasError()) {
-            throw new ErrorException(Yii::t('app', static::$errors[$file->error]));
+        $filesCount = sizeof($files);
+        foreach ($files as $file) {
+            if ($filesCount > 1) {
+                $name = Yii::$app->security->generateRandomString();
+            }
+            if ($file->getHasError()) {
+                $this->uploadErrors[] = Yii::t('app', static::$errors[$file->error]);
+                continue;
+            }
+            if (!in_array($file->type, static::$mimeTypes)) {
+                $this->uploadErrors[] = Yii::t('app', '{file} has invalid file type', ['file' => $file->baseName]);
+                continue;
+            }
+            if ($allowed && !in_array($file->extension, $allowed)) {
+                $this->uploadErrors[] = Yii::t('app', '{file} has invalid file type', ['file' => $file->baseName]);
+                continue;
+            }
+            FileHelper::createDirectory($path);
+            if ($file->saveAs($path.'/'.$name.'.'.$ext)) {
+                $uploaded[] = [
+                    'path' => $path,
+                    'name' => $name,
+                    'ext' => $ext
+                ];
+            }
         }
-        if (!in_array($file->type, static::$mimeTypes)) {
-            throw new ErrorException(Yii::t('app', 'Invalid file type'));
-        }
-        if ($allowed && !in_array($file->extension, $allowed)) {
-            throw new ErrorException(Yii::t('app', 'Invalid file type'));
-        }
-        FileHelper::createDirectory($path);
-        return $file->saveAs($path.'/'.$name.'.'.$ext);
+        return $uploaded;
+    }
+
+    /**
+     * Get list of uploading errors
+     *
+     * @access public
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->uploadErrors;
+    }
+
+    /**
+     * Check if exists upload errors
+     *
+     * @access public
+     * @return boolean
+     */
+    public function hasErrors()
+    {
+        return !empty($this->uploadErrors);
     }
 }
- 
