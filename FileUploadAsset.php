@@ -9,13 +9,14 @@ use yii\web\AssetBundle;
  */
 class FileUploadAsset extends AssetBundle
 {
+    public $sourcePath = '@bower';
     public $js = [
-        '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js',
-        '//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js',
+        'jquery.ui/ui/widget.js',
+        'jquery-file-upload/js/query.fileupload.js',
     ];
 
     public $css = [
-        '//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/css/jquery.fileupload.min.css'
+        'jquery-file-upload/css/jquery.fileupload.css'
     ];
 
     public $depends = [
