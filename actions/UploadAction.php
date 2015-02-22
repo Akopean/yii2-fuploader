@@ -44,7 +44,8 @@ class UploadAction extends Action
             if (sizeof($uploaded) > 1) {
                 $data = [
                     'message' => Yii::t('app', 'File has been uploaded successfully'),
-                    'files' => $uploaded
+                    'files' => $uploaded,
+                    'url' => $this->url.'/'
                 ];
                 $callbackData['files'] = $uploaded;
             } else {
