@@ -97,7 +97,7 @@ Once the extension is installed, simply use it in your code by  :
 	```
 	
 	```json
-	{"message": "some success message", "files": [{path: "", name: "", ext: ""}], "url": "url to files directory"}
+	{"message": "some success message", "files": [{"path": "", "name": "", "ext": ""}], "url": "url to files directory"}
 	```
 	
 	```json
