@@ -1,6 +1,5 @@
 File Uploader
 =============
-> Not ready for production yet. Implemented only single file uploading.
 
 File uploader. Yii2 extension based on [jQuery File Upload Plugin](https://github.com/blueimp/jQuery-File-Upload).
 
@@ -76,18 +75,29 @@ Once the extension is installed, simply use it in your code by  :
 		];
 	}
 	```
-5. If callback was specified it will be triggered after uploading:
+5. If callback was specified it will be triggered after uploading. Exists two types of callbacks:
 
 	```php
 	public function someCallback($request, $file_name, $file_path)
 	{
-		//some code
+		// this callback will be triggered for single file uploading
 	}
 	```
-`UploadAction()` return response in json format. This is structure of response:
+	
+	```php
+	public function someCallback($request, $files)
+	{
+	    // this callback will be triggered for multi file uploading
+	}
+	```
+`UploadAction()` return response in json format. This is structure of response (also has two variants):
 	
 	```json
-	{"message": "successMessage", "name": "some file with extension", "url": "url to file with file name"}
+	{"message": "success message", "name": "some file with extension", "url": "url to file with file name"}
+	```
+	
+	```json
+	{"message": "some success message", "files": [{path: "", name: "", ext: ""}], "url": "url to files directory"}
 	```
 	
 	```json
