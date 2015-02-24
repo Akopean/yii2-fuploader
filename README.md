@@ -11,13 +11,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist joni-jones/yii2-fuploader "dev-master"
+php composer.phar require --prefer-dist joni-jones/yii2-fuploader "*"
 ```
 
 or add
 
 ```
-"joni-jones/yii2-fuploader": "dev-master"
+"joni-jones/yii2-fuploader": "*"
 ```
 
 to the require section of your `composer.json` file.
