@@ -41,27 +41,20 @@ class UploadAction extends Action
                 throw new ErrorException($this->prepareErrors($form->getErrors()));
             }
 			$callbackData['request'] = $request->post();
-            if (sizeof($uploaded) > 1) {
-                $data = [
-                    'message' => Yii::t('app', 'File has been uploaded successfully'),
-                    'files' => $uploaded,
-                    'url' => $this->url.'/'
-                ];
-                $callbackData['files'] = $uploaded;
-            } else {
-                $name = $uploaded[0]['name'].'.'.$uploaded[0]['ext'];
-                $data = [
-                    'message' => Yii::t('app', 'Files has been uploaded successfully'),
-                    'name' => $name,
-                    'url' => $this->url.'/'.$name
-                ];
-                $callbackData['file_name'] = $uploaded[0]['name'];
-                $callbackData['file_path'] = $uploaded[0]['path'];
-            }
+            $callbackData['files'] = $uploaded;
             $response->setStatusCode(self::STATUS_SUCCESS);
-            $response->data = $data;
+            $response->data = [
+                'message' => Yii::t('app', '{count, plural, =1{File} other{Files}} has been uploaded',
+                    ['count' => sizeof($uploaded)]
+                ),
+                'url' => $this->url.'/',
+                'files' => $uploaded
+            ];
 			if (is_callable($this->callback)) {
-				call_user_func_array($this->callback, $callbackData);
+				call_user_func_array($this->callback, [
+                    'request' => $request->post(),
+                    'files' => $uploaded
+                ]);
 			}
         } catch (ErrorException $e) {
             $response->setStatusCode(self::STATUS_APPLICATION_ERROR);

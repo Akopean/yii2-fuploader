@@ -9,6 +9,5 @@ return [
     'Extension' => 'Расширение файла',
     'Attribute' => 'Имя файла',
     'Path' => 'Путь для загрузки',
-    'File has been uploaded successfully' => 'Файл был успешно загружен',
-    'Files has been uploaded successfully' => 'Файлы был успешно загружен',
+    '{count, plural, =1{File} other{Files}} has been uploaded' => '{count, plural, =1{Файл} other{Файлы}} успешно {count, plural, =1{загружен} other{загружены}}',
 ];

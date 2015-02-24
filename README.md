@@ -75,26 +75,15 @@ Once the extension is installed, simply use it in your code by  :
 		];
 	}
 	```
-5. If callback was specified it will be triggered after uploading. Exists two types of callbacks:
-
-	```php
-	public function someCallback($request, $file_name, $file_path)
-	{
-		// this callback will be triggered for single file uploading
-	}
-	```
+5. If callback was specified it will be triggered after uploading:
 	
 	```php
 	public function someCallback($request, $files)
 	{
-	    // this callback will be triggered for multi file uploading
+	    // some code
 	}
 	```
-`UploadAction()` return response in json format. This is structure of response (also has two variants):
-	
-	```json
-	{"message": "success message", "name": "some file with extension", "url": "url to file with file name"}
-	```
+`UploadAction()` return response in json format. This is structure of response:
 	
 	```json
 	{"message": "some success message", "files": [{"path": "", "name": "", "ext": ""}], "url": "url to files directory"}
