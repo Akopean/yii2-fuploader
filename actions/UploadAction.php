@@ -16,22 +16,22 @@ class UploadAction extends Action
     const STATUS_SUCCESS = 200;
     const STATUS_APPLICATION_ERROR = 500;
 
-	/** @var string $path path to file uploading **/
+    /** @var string $path path to file uploading **/
     public $path = '';
-	/** @var string $url url for uploaded file **/
-	public $url = '';
-	/**
-	 * @var string $callback name of controller method,
-	 * this method will be called after uploading
-	 **/
-	public $callback = '';
+    /** @var string $url url for uploaded file **/
+    public $url = '';
+    /**
+     * @var string $callback name of controller method,
+     * this method will be called after uploading
+     **/
+     public $callback = '';
 
     /**
      * @inheritdoc
      */
     public function run()
     {
-        $response = Yii::$app->response;
+    	$response = Yii::$app->response;
         $request = Yii::$app->request;
         try {
             $form = new UploadForm();
@@ -40,7 +40,7 @@ class UploadAction extends Action
             if (!$form->validate() || !$uploaded = $form->upload()) {
                 throw new ErrorException($this->prepareErrors($form->getErrors()));
             }
-			$callbackData['request'] = $request->post();
+	    $callbackData['request'] = $request->post();
             $callbackData['files'] = $uploaded;
             $response->setStatusCode(self::STATUS_SUCCESS);
             $response->data = [
@@ -50,12 +50,12 @@ class UploadAction extends Action
                 'url' => $this->url.'/',
                 'files' => $uploaded
             ];
-			if (is_callable($this->callback)) {
-				call_user_func_array($this->callback, [
+	    if (is_callable($this->callback)) {
+		call_user_func_array($this->callback, [
                     'request' => $request->post(),
                     'files' => $uploaded
                 ]);
-			}
+	    }
         } catch (ErrorException $e) {
             $response->setStatusCode(self::STATUS_APPLICATION_ERROR);
             $response->data = ['reason' => $e->getMessage()];
