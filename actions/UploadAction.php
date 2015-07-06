@@ -31,7 +31,7 @@ class UploadAction extends Action
      */
     public function run()
     {
-    	$response = Yii::$app->response;
+        $response = Yii::$app->response;
         $request = Yii::$app->request;
         try {
             $form = new UploadForm();
@@ -40,16 +40,20 @@ class UploadAction extends Action
             if (!$form->validate() || !$uploaded = $form->upload()) {
                 throw new ErrorException($this->prepareErrors($form->getErrors()));
             }
-	    $callbackData['request'] = $request->post();
-            $callbackData['files'] = $uploaded;
+            $files = $uploaded;
+            foreach ($files as &$file) {
+                unset($file['path']);
+            }
+            unset($file);
             $response->setStatusCode(self::STATUS_SUCCESS);
             $response->data = [
                 'message' => Yii::t('app', '{count, plural, =1{File} other{Files}} has been uploaded',
                     ['count' => sizeof($uploaded)]
                 ),
                 'url' => $this->url.'/',
-                'files' => $uploaded
+                'files' => $files
             ];
+            
 	    if (is_callable($this->callback)) {
 		call_user_func_array($this->callback, [
                     'request' => $request->post(),
@@ -85,4 +89,3 @@ class UploadAction extends Action
         return implode($delimiter, $msg);
     }
 }
- 

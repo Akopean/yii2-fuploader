@@ -52,7 +52,7 @@ class FileUpload extends Widget
         //allow to load multiple files
         if ($this->multiple) {
             $options['multiple'] = '';
-			$this->attribute .= '[]';
+            $this->attribute .= '[]';
         }
         $btnOptions = $this->options;
         unset($btnOptions['id'], $btnOptions['plugin']);
@@ -79,12 +79,12 @@ class FileUpload extends Widget
                 'attribute' => $this->attribute,
                 'fileName' => '',
             ],
-			'singleFileUploads' => false
+            'singleFileUploads' => false
         ];
-		$request = Yii::$app->getRequest();
-		if ($request->enableCsrfValidation) {
-			$options['formData'][$request->csrfParam] = $request->getCsrfToken();
-		}
+        $request = Yii::$app->getRequest();
+        if ($request->enableCsrfValidation) {
+            $options['formData'][$request->csrfParam] = $request->getCsrfToken();
+        }
         $options = Json::encode(ArrayHelper::merge(
             $options,
             !empty($this->options['plugin']) ? $this->options['plugin'] : [])
@@ -92,12 +92,12 @@ class FileUpload extends Widget
         $id = $this->options['id'];
         $js = "jQuery('#$id').fileupload($options);";
         $this->getView()->registerJs($js);
-		if (!empty($this->clientEvents) && is_array($this->clientEvents)) {
-			$js = [];
-			foreach ($this->clientEvents as $name => $callback) {
-				$js[] = "jQuery('#$id').on('$name', $callback);";
-			}
-			$this->getView()->registerJs(implode("\n", $js));
-		}
+        if (!empty($this->clientEvents) && is_array($this->clientEvents)) {
+            $js = [];
+            foreach ($this->clientEvents as $name => $callback) {
+                $js[] = "jQuery('#$id').on('$name', $callback);";
+            }
+            $this->getView()->registerJs(implode("\n", $js));
+        }
     }
 }

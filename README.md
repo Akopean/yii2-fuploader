@@ -3,6 +3,10 @@ File Uploader
 
 File uploader. Yii2 extension based on [jQuery File Upload Plugin](https://github.com/blueimp/jQuery-File-Upload).
 
+[![Latest Stable Version](https://poser.pugx.org/joni-jones/yii2-fuploader/v/stable)](https://packagist.org/packages/joni-jones/yii2-fuploader)
+[![Total Downloads](https://poser.pugx.org/joni-jones/yii2-fuploader/downloads)](https://packagist.org/packages/joni-jones/yii2-fuploader)
+[![License](https://poser.pugx.org/joni-jones/yii2-fuploader/license)](https://packagist.org/packages/joni-jones/yii2-fuploader)
+
 Installation
 ------------
 
@@ -54,10 +58,10 @@ Once the extension is installed, simply use it in your code by  :
 
 	```php
 	FileUpload::widget([
-		'clientEvents' => [
-			'done' => 'function(e, data){console.log(data);}',
-			'fail' => 'function(e, data){console.log(data);}'
-		]
+            'clientEvents' => [
+                'done' => 'function(e, data){console.log(data);}',
+                'fail' => 'function(e, data){console.log(data);}'
+            ]
 	]);
 	```
 4. Also you can use extension actions to store some file details after uploading. For example, update user avatar attribute in database.
@@ -65,14 +69,14 @@ Once the extension is installed, simply use it in your code by  :
 	```php
 	public function actions()
 	{
-		return[
-			'some_action' => [
-				'class' => 'jones\fuploader\actions\UploadAction',
-				'path' => 'some path for uploading',
-				'url' => 'some url for uploaded file', //this url will be accessable in action response
-				'callback' => [$this, 'someCallback'] //any callable function
-			]
-		];
+            return[
+                'some_action' => [
+                    'class' => 'jones\fuploader\actions\UploadAction',
+                    'path' => 'some path for uploading',
+                    'url' => 'some url for uploaded file', //this url will be accessable in action response
+                    'callback' => [$this, 'someCallback'] //any callable function
+                ]
+            ];
 	}
 	```
 5. If callback was specified it will be triggered after uploading:
@@ -86,7 +90,7 @@ Once the extension is installed, simply use it in your code by  :
 `UploadAction()` return response in json format. This is structure of response:
 	
 	```json
-	{"message": "some success message", "files": [{"path": "", "name": "", "ext": ""}], "url": "url to files directory"}
+	{"message": "some success message", "files": [{"name": "", "ext": ""}], "url": "url to files directory"}
 	```
 	
 	```json
