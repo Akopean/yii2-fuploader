@@ -48,9 +48,12 @@ Once the extension is installed, simply use it in your code by  :
 
     ```php
     FileUpload::widget([
-        'plugin' => [
-            'formData' => 'some data',
-        ]
+        'options' => [
+            'plugin' => [
+                'formData' => 'some data',
+            ],
+        ],
+        'content' => 'Select image',
     ]);
     ```
 	
